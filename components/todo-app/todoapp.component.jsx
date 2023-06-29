@@ -46,7 +46,6 @@ function TodoApp() {
 
   const handleEdit = async (id, todos) => {
     setTodos(todos);
-
     setId(id);
     setShow(true);
   };
