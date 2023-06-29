@@ -28,7 +28,7 @@ function TodoApp() {
       setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
     getData();
-  });
+  }, []);
 
   const handleCreate = async () => {
     if (todos === "") {
