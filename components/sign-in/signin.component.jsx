@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [val, setVal] = useState([]);
 
   const router = useRouter();
@@ -36,9 +37,13 @@ const SignIn = () => {
       if (value.email === email && value.password === password) {
         router.push("/dashboard");
         console.log(value.email);
+        console.log(value);
+        console.log(email);
+        console.log(password);
       } else {
-        router.push("/signin");
+        router.push("/");
         console.log("signed in failed");
+        setError("Password Not Match or User Not Found");
       }
     });
   };
@@ -47,6 +52,7 @@ const SignIn = () => {
       onSubmit={signInUser}
       className="flex flex-col justify-center items-center"
     >
+      {error && <div className="text-lg">{error}</div>}
       <div className="mb-6">
         <label
           for="email"
