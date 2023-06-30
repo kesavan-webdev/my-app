@@ -25,37 +25,45 @@ const SignIn = () => {
   useEffect(() => {
     const getData = async () => {
       const dbVal = await getDocs(value);
-      setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      await setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
       console.log(val);
     };
     getData();
   }, []);
 
-  function authenticate(email, password) {
-    val.map((value) => {
-      if (value.email === email && value.password === password) {
-        localStorage.setItem("user", JSON.stringify({ email }));
-        return true;
-      }
-      return false;
-    });
-  }
+  // function authenticate(email, password) {
+  //   val.map((value) => {
+  //     if (value.email === email && value.password === password) {
+
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+  // }
 
   const signInUser = (e) => {
     e.preventDefault();
 
     val.forEach((value) => {
+      // console.log(authenticate(email, password));
       if (value.email === email && value.password === password) {
-        if (authenticate(email, password)) {
-          router.push("/dashboard");
-        } else {
-          // handle login error
-          router.push("/signin");
-        }
         console.log(value.email);
         console.log(value);
         console.log(email);
         console.log(password);
+        // console.log(authenticate(email, password));
+        localStorage.setItem("user", JSON.stringify({ email }));
+        router.push("/dashboard");
+        // if (authenticate(email, password)) {
+        //   return
+        // } else {
+        //   // handle login error
+        //   console.log(value.email);
+        //   console.log(value);
+        //   console.log(email);
+        //   console.log(password);
+        //   return router.push("/signin");
+        // }
       } else {
         console.log("signed in failed");
         setError("Password Not Match or User Not Found");

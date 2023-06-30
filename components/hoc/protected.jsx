@@ -1,9 +1,10 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function withAuth(Component) {
   return function ProtectedRoute({ ...props }) {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const router = useRouter();
     const user = JSON.parse(localStorage.getItem("user"));
     const userIsAuthenticated = user !== null;
