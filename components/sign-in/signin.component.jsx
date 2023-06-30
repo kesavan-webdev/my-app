@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "@/firebase/firebase.config";
+// import { authenticate } from "../utils/auth";
 
 import { useRouter } from "next/navigation";
 
@@ -30,18 +31,32 @@ const SignIn = () => {
     getData();
   }, []);
 
+  function authenticate(email, password) {
+    val.map((value) => {
+      if (value.email === email && value.password === password) {
+        localStorage.setItem("user", JSON.stringify({ email }));
+        return true;
+      }
+      return false;
+    });
+  }
+
   const signInUser = (e) => {
     e.preventDefault();
 
     val.forEach((value) => {
       if (value.email === email && value.password === password) {
-        router.push("/dashboard");
+        if (authenticate(email, password)) {
+          router.push("/dashboard");
+        } else {
+          // handle login error
+          router.push("/signin");
+        }
         console.log(value.email);
         console.log(value);
         console.log(email);
         console.log(password);
       } else {
-        router.push("/");
         console.log("signed in failed");
         setError("Password Not Match or User Not Found");
       }

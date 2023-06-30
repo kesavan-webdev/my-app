@@ -1,7 +1,9 @@
+"use client";
 import TodoApp from "@/components/todo-app/todoapp.component";
+import withAuth from "@/components/hoc/protected";
 
-const page = () => {
+const Todos = () => {
   return <TodoApp />;
 };
 
-export default page;
+export default withAuth(Todos);

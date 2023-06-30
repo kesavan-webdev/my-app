@@ -1,5 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
+import withAuth from "@/components/hoc/protected";
 import Navbar from "@/components/navbar/navbar.component";
 const Dashboard = () => {
   const router = useRouter();
@@ -18,4 +19,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default withAuth(Dashboard);

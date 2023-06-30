@@ -11,7 +11,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 
-function TodoApp() {
+const TodoApp = () => {
   const [todos, setTodos] = useState("");
 
   const [id, setId] = useState("");
@@ -99,5 +99,5 @@ function TodoApp() {
       ))}
     </div>
   );
-}
+};
 export default TodoApp;
