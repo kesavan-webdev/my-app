@@ -1,11 +1,16 @@
 "use client";
-
+//hooks
 import { useState } from "react";
-
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "@/firebase/firebase.config";
 import { useRouter } from "next/navigation";
+//firebase
+import { collection, addDoc, doc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase/firebase.config";
+import { db } from "@/firebase/firebase.config";
+
 const SignUp = () => {
+  //------hooks----------
+  //data need to store in firebase
   const [userData, setUserData] = useState({
     email: "",
     password: "",
@@ -15,19 +20,48 @@ const SignUp = () => {
     phone: "",
     company: "",
   });
+  //navigation
   const router = useRouter();
+
+  //----------functions-------
+
+  //create new user using firebase authentication
+  const createUser = async (email, password) => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user.uid);
+        console.log(userCredential.user.refreshToken);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
+  };
+
+  //store new user data in firebase
+  const userDataFirebase = async () => {
+    const docRef = await addDoc(collection(db, "users"), {
+      email: userData.email,
+      firstname: userData.firstname,
+      lastname: userData.lastname,
+      phone: userData.phone,
+      password: userData.password,
+      cpassword: userData.cpassword,
+      company: userData.company,
+    });
+  };
+
+  //-------event based Functions--------
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      const docRef = await addDoc(collection(db, "users"), {
-        email: userData.email,
-        firstname: userData.firstname,
-        lastname: userData.lastname,
-        phone: userData.phone,
-        password: userData.password,
-        cpassword: userData.cpassword,
-        company: userData.company,
-      });
+      await createUser(userData.email, userData.password);
+      await userDataFirebase();
       await router.push("/signin");
       await setUserData({
         email: "",
