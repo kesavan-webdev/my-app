@@ -1,4 +1,10 @@
 "use client";
+
+//hooks
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+//firebase
 import {
   addDoc,
   collection,
@@ -7,72 +13,66 @@ import {
   getDocs,
   updateDoc,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
 import { db } from "@/firebase/firebase.config";
-// import { authenticate } from "../utils/auth";
-
-import { useRouter } from "next/navigation";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase/firebase.config";
 
 const SignIn = () => {
+  //hooks
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [val, setVal] = useState([]);
-
   const router = useRouter();
-  const value = collection(db, "users");
 
+  //---------functions------
+
+  //login with existing user using firebase authentication
+  const loginUser = async (email, password) => {
+    await signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        router.push("/dashboard");
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  };
+
+  //get all the users data from firestore in firebase
+  const value = collection(db, "users");
   const getData = async () => {
     const dbVal = await getDocs(value);
     await setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     console.log(val);
   };
+
   useEffect(() => {
     getData();
   }, []);
 
-  // function authenticate(email, password) {
-  //   val.map((value) => {
-  //     if (value.email === email && value.password === password) {
+  //--------event based functions----------
 
-  //       return true;
-  //     }
-  //     return false;
-  //   });
-  // }
-
-  const signInUser = (e) => {
+  //this function will go check the data got from firestore
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     val.forEach((value) => {
-      // console.log(authenticate(email, password));
       if (value.email === email && value.password === password) {
-        console.log(value.email);
-        console.log(value);
-        console.log(email);
-        console.log(password);
-        // console.log(authenticate(email, password));
         localStorage.setItem("user", JSON.stringify({ email }));
-        router.push("/dashboard");
-        // if (authenticate(email, password)) {
-        //   return
-        // } else {
-        //   // handle login error
-        //   console.log(value.email);
-        //   console.log(value);
-        //   console.log(email);
-        //   console.log(password);
-        //   return router.push("/signin");
-        // }
       } else {
         console.log("signed in failed");
         setError("Password Not Match or User Not Found");
       }
     });
+    loginUser(email, password);
   };
+
   return (
     <form
-      onSubmit={signInUser}
+      onSubmit={handleSubmit}
       className="flex flex-col justify-center items-center"
     >
       {error && <div className="text-lg">{error}</div>}
