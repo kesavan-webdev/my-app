@@ -5,6 +5,7 @@ const Navbar = () => {
   const router = useRouter();
   const handleOnClick = () => {
     localStorage.removeItem("user");
+
     router.push("/");
   };
   return (

@@ -21,14 +21,21 @@ const TodoApp = () => {
   const [val, setVal] = useState([]);
 
   const value = collection(db, "todos");
-
-  useEffect(() => {
-    const getData = async () => {
-      const dbVal = await getDocs(value);
+  const getData = async () => {
+    const dbVal = await getDocs(value);
+    console.log(dbVal.docs);
+    dbVal.docs.length > 0 &&
       setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
+  };
+  useEffect(() => {
     getData();
-  }, [val]);
+  }, []);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    getData();
+  };
 
   const handleCreate = async () => {
     if (todos === "") {
@@ -42,6 +49,7 @@ const TodoApp = () => {
   const handleDelete = async (id) => {
     const deleteVal = doc(db, "todos", id);
     await deleteDoc(deleteVal);
+    getData();
   };
 
   const handleEdit = async (id, todos) => {
@@ -59,44 +67,55 @@ const TodoApp = () => {
 
   return (
     <div className="container flex flex-col gap-5 items-center justify-center">
-      <input
-        className="border-2 border-slate-700"
-        value={todos}
-        onChange={(e) => setTodos(e.target.value)}
-      />
+      <form onSubmit={handleSubmit}>
+        <input
+          className="border-2 border-slate-700"
+          value={todos}
+          onChange={(e) => setTodos(e.target.value)}
+        />
 
-      {!show ? (
-        <button className="bg-green-600 p-5 text-white" onClick={handleCreate}>
-          Create
-        </button>
-      ) : (
-        <button className="bg-green-300 p-5 text-white" onClick={handleUpdate}>
-          Update
-        </button>
-      )}
-      {val.map((values) => (
-        <div
-          key={values.id}
-          className="flex bg-slate-400 w-96 justify-between px-5 py-2 items-center"
-        >
-          <h1>{values.todo}</h1>
+        {!show ? (
+          <button
+            type="submit"
+            className="bg-green-600 p-5 text-white"
+            onClick={handleCreate}
+          >
+            Create
+          </button>
+        ) : (
+          <button
+            type="submit"
+            className="bg-green-300 p-5 text-white"
+            onClick={handleUpdate}
+          >
+            Update
+          </button>
+        )}
+      </form>
+      {val.length >= 1 &&
+        val.map((values) => (
+          <div
+            key={values.id}
+            className="flex bg-slate-400 w-96 justify-between px-5 py-2 items-center"
+          >
+            <h1>{values.todo}</h1>
 
-          <div className="flex gap-3">
-            <button
-              className="bg-red-800 p-2 text-white"
-              onClick={() => handleDelete(values.id)}
-            >
-              Delete
-            </button>
-            <button
-              className="bg-orange-500 p-2 text-white"
-              onClick={() => handleEdit(values.id, values.todo)}
-            >
-              Edit
-            </button>
+            <div className="flex gap-3">
+              <button
+                className="bg-red-800 p-2 text-white"
+                onClick={() => handleDelete(values.id)}
+              >
+                Delete
+              </button>
+              <button
+                className="bg-orange-500 p-2 text-white"
+                onClick={() => handleEdit(values.id, values.todo)}
+              >
+                Edit
+              </button>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 };

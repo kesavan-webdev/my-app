@@ -1,19 +1,18 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function withAuth(Component) {
   return function ProtectedRoute({ ...props }) {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const router = useRouter();
-    const user = JSON.parse(localStorage.getItem("user"));
-    const userIsAuthenticated = user !== null;
 
     useEffect(() => {
+      const user = JSON.parse(localStorage.getItem("user"));
+      const userIsAuthenticated = user !== null;
       if (!userIsAuthenticated) {
-        router.push("/signin");
+        router.push("/");
       }
-    }, [userIsAuthenticated, router]);
+    }, []);
 
     return <Component {...props} />;
   };

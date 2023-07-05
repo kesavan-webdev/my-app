@@ -22,12 +22,12 @@ const SignIn = () => {
   const router = useRouter();
   const value = collection(db, "users");
 
+  const getData = async () => {
+    const dbVal = await getDocs(value);
+    await setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    console.log(val);
+  };
   useEffect(() => {
-    const getData = async () => {
-      const dbVal = await getDocs(value);
-      await setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      console.log(val);
-    };
     getData();
   }, []);
 
