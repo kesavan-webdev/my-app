@@ -7,9 +7,13 @@ import { collection, addDoc, doc } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase/firebase.config";
 import { db } from "@/firebase/firebase.config";
+import { UserContext } from "@/context/userContext";
+import { useContext } from "react";
 
 const SignUp = () => {
   //------hooks----------
+
+  const { createUser } = useContext(UserContext);
   //data need to store in firebase
   const [userData, setUserData] = useState({
     email: "",
@@ -24,23 +28,6 @@ const SignUp = () => {
   const router = useRouter();
 
   //----------functions-------
-
-  //create new user using firebase authentication
-  const createUser = async (email, password) => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        console.log(user.uid);
-        console.log(userCredential.user.refreshToken);
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
-  };
 
   //store new user data in firebase
   const userDataFirebase = async () => {

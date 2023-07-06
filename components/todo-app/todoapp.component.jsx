@@ -9,9 +9,14 @@ import {
   doc,
   getDocs,
   updateDoc,
+  query,
+  where,
 } from "firebase/firestore";
+import { UserContext } from "@/context/userContext";
+import { useContext } from "react";
 
 const TodoApp = () => {
+  const { userEmail } = useContext(UserContext);
   const [todos, setTodos] = useState("");
 
   const [id, setId] = useState("");
@@ -20,12 +25,28 @@ const TodoApp = () => {
 
   const [val, setVal] = useState([]);
 
+  const [filteredData, setFilteredData] = useState([]);
+
   const value = collection(db, "todos");
   const getData = async () => {
     const dbVal = await getDocs(value);
     console.log(dbVal.docs);
     dbVal.docs.length > 0 &&
-      setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      // setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      console.log(dbVal.docs.map((doc) => doc.data().email));
+    console.log(dbVal.docs.map((doc) => doc.data()));
+    console.log(val);
+
+    const q = query(value, where("email", "==", userEmail));
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      setVal(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      // setFilteredData((prev) => [...prev, doc.data()]);
+    });
   };
   useEffect(() => {
     getData();
@@ -41,12 +62,13 @@ const TodoApp = () => {
     if (todos === "") {
       alert("plz enter a value");
     } else {
-      await addDoc(value, { todo: todos });
+      await addDoc(value, { todo: todos, email: userEmail });
       setTodos("");
     }
   };
 
   const handleDelete = async (id) => {
+    console.log(id);
     const deleteVal = doc(db, "todos", id);
     await deleteDoc(deleteVal);
     getData();

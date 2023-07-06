@@ -16,6 +16,8 @@ import {
 import { db } from "@/firebase/firebase.config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebase/firebase.config";
+import { UserContext } from "@/context/userContext";
+import { useContext } from "react";
 
 const SignIn = () => {
   //hooks
@@ -25,22 +27,23 @@ const SignIn = () => {
   const [val, setVal] = useState([]);
   const router = useRouter();
 
+  const { loginUser } = useContext(UserContext);
   //---------functions------
 
-  //login with existing user using firebase authentication
-  const loginUser = async (email, password) => {
-    await signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        router.push("/dashboard");
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      });
-  };
+  // //login with existing user using firebase authentication
+  // const loginUser = async (email, password) => {
+  //   await signInWithEmailAndPassword(auth, email, password)
+  //     .then((userCredential) => {
+  //       // Signed in
+  //       const user = userCredential.user;
+  //       router.push("/dashboard");
+  //       // ...
+  //     })
+  //     .catch((error) => {
+  //       const errorCode = error.code;
+  //       const errorMessage = error.message;
+  //     });
+  // };
 
   //get all the users data from firestore in firebase
   const value = collection(db, "users");
