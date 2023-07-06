@@ -25,8 +25,6 @@ const TodoApp = () => {
 
   const [val, setVal] = useState([]);
 
-  const [filteredData, setFilteredData] = useState([]);
-
   const value = collection(db, "todos");
   const getData = async () => {
     const dbVal = await getDocs(value);
