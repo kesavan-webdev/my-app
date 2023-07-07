@@ -16,10 +16,11 @@ import { UserContext } from "@/context/userContext";
 import { useContext } from "react";
 
 const TodoApp = () => {
+  //context api
   const { uid, setUid } = useContext(UserContext);
+
+  //usestate
   const [todos, setTodos] = useState("");
-  const getUserUid = localStorage.getItem("userUid");
-  setUid(getUserUid);
 
   const [id, setId] = useState("");
 
@@ -27,34 +28,28 @@ const TodoApp = () => {
 
   const [val, setVal] = useState([]);
 
+  //firbase functions
   const value = collection(db, "todos");
-  const getData = async () => {
-    const dbVal = await getDocs(value);
-    console.log(dbVal.docs);
-    dbVal.docs.length > 0 &&
-      // setVal(dbVal.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      console.log(dbVal.docs.map((doc) => doc.data().email));
-    console.log(dbVal.docs.map((doc) => doc.data()));
-    console.log(val);
 
+  const getData = async () => {
     const q = query(value, where("uid", "==", uid));
 
     const querySnapshot = await getDocs(q);
 
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
       console.log(doc.id, " => ", doc.data());
       setVal(querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      // setFilteredData((prev) => [...prev, doc.data()]);
     });
   };
   useEffect(() => {
+    const getUserUid = localStorage.getItem("userUid");
+    setUid(getUserUid);
+    console.log("hello");
     getData();
-  }, []);
+  }, [uid]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     getData();
   };
 
@@ -65,6 +60,12 @@ const TodoApp = () => {
       await addDoc(value, { todo: todos, uid: uid });
       setTodos("");
     }
+  };
+  const handleUpdate = async () => {
+    const updateData = doc(db, "todos", id);
+    await updateDoc(updateData, { todo: todos });
+    setShow(false);
+    setTodos("");
   };
 
   const handleDelete = async (id) => {
@@ -78,13 +79,6 @@ const TodoApp = () => {
     setTodos(todos);
     setId(id);
     setShow(true);
-  };
-
-  const handleUpdate = async () => {
-    const updateData = doc(db, "todos", id);
-    await updateDoc(updateData, { todo: todos });
-    setShow(false);
-    setTodos("");
   };
 
   return (

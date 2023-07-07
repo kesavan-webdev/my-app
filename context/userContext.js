@@ -28,7 +28,6 @@ function UserProvider({ children }) {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        const setUserUid = localStorage.setItem("userUid", user.uid);
 
         console.log(user.uid);
         console.log(userCredential.user.refreshToken);
@@ -46,6 +45,7 @@ function UserProvider({ children }) {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
+        const setUserUid = localStorage.setItem("userUid", user.uid);
 
         router.push("/dashboard");
         // ...

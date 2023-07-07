@@ -27,7 +27,7 @@ const SignIn = () => {
   const [val, setVal] = useState([]);
   const router = useRouter();
 
-  const { loginUser } = useContext(UserContext);
+  const { loginUser, uid, setUid } = useContext(UserContext);
   //---------functions------
 
   // //login with existing user using firebase authentication
