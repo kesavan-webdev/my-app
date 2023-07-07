@@ -1,11 +1,9 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/userContext";
-import { useContext } from "react";
 
 const Navbar = () => {
   const router = useRouter();
-  const { setUid } = useContext(UserContext);
+
   const handleOnClick = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("userUid");

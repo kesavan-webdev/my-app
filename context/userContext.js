@@ -19,7 +19,6 @@ import { auth } from "@/firebase/firebase.config";
 export const UserContext = createContext();
 
 function UserProvider({ children }) {
-  const [uid, setUid] = useState("");
   const router = useRouter();
 
   //create new user using firebase authentication
@@ -46,7 +45,6 @@ function UserProvider({ children }) {
         // Signed in
         const user = userCredential.user;
         const setUserUid = localStorage.setItem("userUid", user.uid);
-
         router.push("/dashboard");
         // ...
       })
@@ -71,8 +69,6 @@ function UserProvider({ children }) {
     <UserContext.Provider
       value={{
         loginUser,
-        uid,
-        setUid,
         createUser,
       }}
     >
