@@ -46,11 +46,6 @@ const TodoApp = () => {
     getData();
   }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    getData();
-  };
-
   const handleCreate = async (e) => {
     e.preventDefault();
     if (todos === "") {
@@ -75,7 +70,12 @@ const TodoApp = () => {
     console.log(id);
     const deleteVal = doc(db, "todos", id);
     await deleteDoc(deleteVal);
-    getData();
+    console.log(val.length);
+    if (val.length === 1) {
+      setVal([]);
+    } else {
+      getData();
+    }
   };
 
   const handleEdit = async (id, todos) => {
@@ -109,29 +109,30 @@ const TodoApp = () => {
           </button>
         )}
       </form>
-      {val.map((values) => (
-        <div
-          key={values.id}
-          className="flex bg-slate-400 w-96 justify-between px-5 py-2 items-center"
-        >
-          <h1>{values.todo}</h1>
+      {val.length > 0 &&
+        val.map((values) => (
+          <div
+            key={values.id}
+            className="flex bg-slate-400 w-96 justify-between px-5 py-2 items-center"
+          >
+            <h1>{values.todo}</h1>
 
-          <div className="flex gap-3">
-            <button
-              className="bg-red-800 p-2 text-white"
-              onClick={() => handleDelete(values.id)}
-            >
-              Delete
-            </button>
-            <button
-              className="bg-orange-500 p-2 text-white"
-              onClick={() => handleEdit(values.id, values.todo)}
-            >
-              Edit
-            </button>
+            <div className="flex gap-3">
+              <button
+                className="bg-red-800 p-2 text-white"
+                onClick={() => handleDelete(values.id)}
+              >
+                Delete
+              </button>
+              <button
+                className="bg-orange-500 p-2 text-white"
+                onClick={() => handleEdit(values.id, values.todo)}
+              >
+                Edit
+              </button>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 };
