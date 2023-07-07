@@ -16,8 +16,10 @@ import { UserContext } from "@/context/userContext";
 import { useContext } from "react";
 
 const TodoApp = () => {
-  const { userEmail } = useContext(UserContext);
+  const { uid, setUid } = useContext(UserContext);
   const [todos, setTodos] = useState("");
+  const getUserUid = localStorage.getItem("userUid");
+  setUid(getUserUid);
 
   const [id, setId] = useState("");
 
@@ -35,7 +37,7 @@ const TodoApp = () => {
     console.log(dbVal.docs.map((doc) => doc.data()));
     console.log(val);
 
-    const q = query(value, where("email", "==", userEmail));
+    const q = query(value, where("uid", "==", uid));
 
     const querySnapshot = await getDocs(q);
 
@@ -60,7 +62,7 @@ const TodoApp = () => {
     if (todos === "") {
       alert("plz enter a value");
     } else {
-      await addDoc(value, { todo: todos, email: userEmail });
+      await addDoc(value, { todo: todos, uid: uid });
       setTodos("");
     }
   };

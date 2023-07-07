@@ -14,12 +14,12 @@ import {
 import { addDoc, collection } from "firebase/firestore";
 
 //firebase config file
-import { auth, db } from "@/firebase/firebase.config";
+import { auth } from "@/firebase/firebase.config";
 
 export const UserContext = createContext();
 
 function UserProvider({ children }) {
-  const [userEmail, setuserEmail] = useState("");
+  const [uid, setUid] = useState("");
   const router = useRouter();
 
   //create new user using firebase authentication
@@ -28,6 +28,8 @@ function UserProvider({ children }) {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
+        const setUserUid = localStorage.setItem("userUid", user.uid);
+
         console.log(user.uid);
         console.log(userCredential.user.refreshToken);
         // ...
@@ -69,8 +71,8 @@ function UserProvider({ children }) {
     <UserContext.Provider
       value={{
         loginUser,
-        userEmail,
-        setuserEmail,
+        uid,
+        setUid,
         createUser,
       }}
     >
